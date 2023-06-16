@@ -13,7 +13,7 @@ So far I am only documenting the running state, it is clear that battery serial 
 
 ## Messages
 
-Unlike other BMS protocols where the messages have an <SOI>...<EOI> this protocol is different....
+Unlike other BMS protocols where the messages have an [SOI]...[EOI] this protocol is different....
   
 As a general rule the BMS sends a 10 byte message which contains the <pack_id>,<function>,<length>,<command bytes 1,2,3>, followed by a 2 byte checksum and <0d>,<0a>.
 
