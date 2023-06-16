@@ -92,7 +92,16 @@ Messages are sent approx every 100mS, gaps between messages are approx 30mS
 |   0x00  |  0x00  |  0x01   |  0x00  |	 0x58  |  0x33  | 0x00,0x0B |  0x20   |  0x82   | Received packet              |
 |   00    |   00   |   01    |   00   |	 88%   |00110011|  Cycles=11|   2.0   |   82    | Decoded info, SoC=88%, Flags=00110011, ver 2.0, battery_type=82, Cycles = 11 |
 ||
+  Notes:
+      Cycles Byte7=msb, Byte8=lsb - diviser 1 e.g (0x00*256)+0x90= 144 cycles
+  
+      f/w ver Byte9 top nibble is major, bottom nibble is minor version so 0x1F is 1.15 and 0x20 is 2.0
+  
+      batt_type  Byte10=0x82 appears to signify HV2600 V1
+  
+      Flags, Byte6 assumed to be charge, discharge, balance etc.. - more testing required.
 
+  
 **another example using pack_4**
 
   ### BMS command <22,00,05> Pack Stats
@@ -118,6 +127,9 @@ Messages are sent approx every 100mS, gaps between messages are approx 30mS
 |   0x00  |  0x00  |  0x04   |  0x00  |	 0x46  |  0x19  | 0x00,0x90 |   0x20  |  0x82   | Received packet              |
 |   00    |   00   |   04    |   00   |	 70%   |00011001| Cycles=144|   2.0   |   82    | Decoded SoC=70%, Flags=00110011, ver 2.0, battery_type=82, Cycles = 144 |
 ||
+    
+
+  
   
   ### BMS command <08,00,09> Cell mV 1-9
   
@@ -144,6 +156,9 @@ Messages are sent approx every 100mS, gaps between messages are approx 30mS
 |   3325mV   |  3325mV   | 	3326mV   |  3325mV   |  3325mV   |  3325mV   |  3325mV   |  3325mV   | 3325mV    |            |
 ||
   
+  Notes:  
+      Cell mV, 1st byte=msb, 2nd byte4=lsb, diviser = 1 e.g 0x0C,0xFE = 3326mV
+ 
  
    
   ### BMS command <11,00,09> Cell mV 10-18
@@ -194,11 +209,16 @@ Messages are sent approx every 100mS, gaps between messages are approx 30mS
 |   0x00  |  0x00  | 0x67,0xE7|  0xF7  |	0xDC  | 0x00,0xED | 0x0C,0xFE | 0x0C,0xFB |  0x0A,0x6E |  0x0A,0x32 |               |
 |   00    |   00   |  53.198V |   00   | 2.2kwH |  -2.37A   |     3326  |   3323    |   26.70C   |   26.10C   |               |
  
-  Notes: Volts Byte3=msb, Byte4=lsb - then double value, diviser 0.001 e.g (0x67*256)+0xE7= (26,599 * 2)/1000 = 53.198V
-         kWR   Byte6 diviser, convert to decimal, diviser = 0.01 e.g (0xDC) = 220/100 = 2.2kwh
-         Amps  Byte7=msb,Byte8=lsb signed, diviser = 0.01 0x00,0xED = 237/100 = -2.37A (discharge), >32768=charge
-         Hi/LomV, 1st byte=msb, 2nd byte4=lsb, diviser = 1 e.g 0x0C,0xFE = 3326mV
-         Hi/LoCellTemp 1st byte=msb, 2nd byte4=lsb, diviser = 0.01 e.g 0x0A,0x6E = 26.70C
+  Notes:
+      Volts Byte3=msb, Byte4=lsb - then double value, diviser 0.001 e.g (0x67*256)+0xE7= (26,599 * 2)/1000 = 53.198V
+  
+      kWR   Byte6 diviser, convert to decimal, diviser = 0.01 e.g (0xDC) = 220/100 = 2.2kwh
+  
+      Amps  Byte7=msb,Byte8=lsb signed, diviser = 0.01 0x00,0xED = 237/100 = -2.37A (discharge), >32768=charge
+  
+      Hi/LomV, 1st byte=msb, 2nd byte4=lsb, diviser = 1 e.g 0x0C,0xFE = 3326mV
+  
+      Hi/LoCellTemp 1st byte=msb, 2nd byte4=lsb, diviser = 0.01 e.g 0x0A,0x6E = 26.70C
   
   
   
