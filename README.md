@@ -68,7 +68,7 @@ The BMS send command is comprised of three command codes,
 
 ## Command by Command review
   
-  BMS command <22,00,05> Pack Stats to pack 1
+  ### BMS command <22,00,05> Pack Stats
   
   the send message to pack_1 looks like this -
   > 01,03,00,22,00,05,25,C3,0D,0A
@@ -89,11 +89,11 @@ The BMS send command is comprised of three command codes,
 |	 <0x00> | <0x00> | Pack_id | <0x00> |  SoC   | Flags? |  Cycles   | f/w_ver |batt_type|                              |
 |   0x00  |  0x00  |  0x01   |  0x00  |	 0x58  |  0x33  | 0x00,0x0B |  0x20   |  0x82   | Received packet              |
 |   00    |   00   |   01    |   00   |	 88%   |00110011|  Cycles=11|   2.0   |   82    | Decoded info, SoC=88%, Flags=00110011, ver 2.0, battery_type=82, Cycles = 11 |
-  
+||
 
 **another example using pack_4**
 
-  BMS command <22,00,05> Pack Stats to pack_4
+  ### BMS command <22,00,05> Pack Stats
   
   the send message to pack_4 looks like this -
   > 04,03,00,22,00,05,25,96,0D,0A
@@ -115,9 +115,9 @@ The BMS send command is comprised of three command codes,
 |	 <0x00> | <0x00> | Pack_id | <0x00> |  SoC   | Flags? |  Cycles   | f/w_ver |batt_type|                              |
 |   0x00  |  0x00  |  0x04   |  0x00  |	 0x46  |  0x19  | 0x00,0x90 |   0x20  |  0x82   | Received packet              |
 |   00    |   00   |   04    |   00   |	 70%   |00011001| Cycles=144|   2.0   |   82    | Decoded SoC=70%, Flags=00110011, ver 2.0, battery_type=82, Cycles = 144 |
-
+||
   
-  BMS command (<08,00,09> Cell mV 1-9) to pack_8
+  ### BMS command <08,00,09> Cell mV 1-9
   
   the send message to pack_8 looks like this -
   
@@ -131,7 +131,7 @@ The BMS send command is comprised of three command codes,
   
   The data packet is <0C,FD,0C,FD,0C,FE,0C,FD,0C,FD,0C,FD,0C,FD,0C,FD,0C,FD>
   
-  So far all 16 bit integers have been the first byte is most significant.
+  So far all 16 bit integers have seen the first byte as most significant.
   
   the data packet contains the following information
   
@@ -143,11 +143,8 @@ The BMS send command is comprised of three command codes,
 ||
   
  
-  
-**another example using pack_1**  
-  
-  
-  BMS command (<11,00,09> Cell mV 10-18) to pack_1
+   
+  ### BMS command <11,00,09> Cell mV 10-18
   
   the send message to pack_1 looks like this -
   
@@ -173,6 +170,34 @@ The BMS send command is comprised of three command codes,
 ||
 
 
+  ### BMS command <00,00,08> Pack Status
+  
+  the send message to pack_1 looks like this -
+  > 01,03,00,00,00,08,44,0C,0D,0A
+  
+  and the pack_1 response is this -
+  > 01,03,10,00,00,67,E7,F7,DC,00,ED,0C,FE,0C,FB,0A,6E,0A,32,58,27,0D,0A
+  
+  The Length is 10 (decimal 16), the data begins at byte 4 for 16 bytes, followed by checksum of 58,27 and terminated by 0d,0a
+  
+  The data packet is <00,00,67,E7,F7,DC,00,ED,0C,FE,0C,FB,0A,6E,0A,32>
+  
+  So far all 16 bit integers have been the first byte is most significant.
+  
+  the data packet contains the following information
+  
+| Byte1   | Byte2  | Byte3,4  | Byte5  | Byte6  |  Byte7,8  | Byte9,10  | Byte11,12 | Byte13,14  | Byte15,16  |    Notes      |
+|:-------:|:------:|:--------:|:------:|:------:|:---------:|:---------:|:---------:|:----------:|:----------:|:--------------|
+|	 <0x00> | <0x00> | Volts    | <0x00> |  kWR   |    Amps   |   HimV    |   LomV    | HiCellTemp | LoCellTemp |               |
+|   0x00  |  0x00  | 0x67,0xE7|  0xF7  |	0xDC  | 0x00,0xED | 0x0C,0xFE | 0x0C,0xFB |  0x0A,0x6E |  0x0A,0x32 |               |
+|   00    |   00   |  53.198V |   00   | 2.2kwH |  -2.37A   |     3326  |   3323    |   26.70C   |   26.10C   |               |
+ 
+  Notes: Volts Byte3=msb, Byte4=lsb - then double value, diviser 0.001 e.g (0x67*256)+0xE7= (26,599 * 2)/1000 = 53.198V
+         kWR   Byte6 diviser, convert to decimal, diviser = 0.01 e.g (0xDC) = 220/100 = 2.2kwh
+         Amps  Byte7=msb,Byte8=lsb signed, diviser = 0.01 0x00,0xED = 237/100 = -2.37A (discharge), >32768=charge
+         Hi/LomV, 1st byte=msb, 2nd byte4=lsb, diviser = 1 e.g 0x0C,0xFE = 3326mV
+         Hi/LoCellTemp 1st byte=msb, 2nd byte4=lsb, diviser = 0.01 e.g 0x0A,0x6E = 26.70C
+  
   
   
 ### Checksum
