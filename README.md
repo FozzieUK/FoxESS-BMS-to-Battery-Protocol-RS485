@@ -66,6 +66,8 @@ The BMS send command is comprised of three command codes,
 |    1A      |    00     |    08     |   Send pack temps                           |
 |    00      |    00     |    08     |   Send pack status                          |
 
+Messages are sent approx every 100mS, gaps between messages are approx 30mS
+  
 ## Command by Command review
   
   ### BMS command <22,00,05> Pack Stats
