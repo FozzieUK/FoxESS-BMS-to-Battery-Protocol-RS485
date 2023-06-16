@@ -138,8 +138,8 @@ The BMS send command is comprised of three command codes,
   
 | Byte1 | Byte2 | Byte3 | Byte4 | Byte5 | Byte6 | Byte7 | Byte8 | Byte9 | Byte10| Byte11| Byte12| Byte13| Byte14| Byte15| Byte16| Byte17| Byte18|  Notes     |
 |:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----------|
-|<C1mV> |<C1mV> |<C2mV> |<C2mV> |<C3mV> |<C3mV> |<C4mV> |<C4mV> |<C5mV> |<C5mV> |<C6mV> |<C6mV> |<C7mV> |<C7mV> |<C8mV> |<C8mV> |<C9mV> |<C9mV> |            |
-|   0C  |   FD  |  0C   |  FD   |	 OC   |   FE  |   0C  |   FD  |  0C   |   FD  |   0C  |  FD   |   0C  |  FD   |  0C   |   FD  |  0C   |   FD  |            |
+|(C1mV) |(C1mV) |(C2mV) |(C2mV) |(C3mV) |(C3mV) |(C4mV) |(C4mV) |(C5mV) |(C5mV) |(C6mV) |(C6mV) |(C7mV) |(C7mV) |(C8mV) |(C8mV) |(C9mV) |(C9mV) |            |
+|  0x0C |  0xFD | 0x0C  | 0xFD  |	0xOC  | 0xFE  | 0x0C  | 0xFD  | 0x0C  | 0xFD  | 0x0C  | 0xFD  | 0x0C  | 0xFD  | 0x0C  | 0xFD  | 0x0C  | 0xFD  |            |
 | 3325mV|       | 3325mV|       |	3326mV|       | 3325mV|       | 3325mV|       | 3325mV|       | 3325mV|       | 3325mV|       | 3325mV|       |            |
 ||
   
@@ -168,9 +168,9 @@ The BMS send command is comprised of three command codes,
   
 | Byte1 | Byte2 | Byte3 | Byte4 | Byte5 | Byte6 | Byte7 | Byte8 | Byte9 | Byte10| Byte11| Byte12| Byte13| Byte14| Byte15| Byte16| Byte17| Byte18|  Notes     |
 |:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----------|
-|<C10mV>|<C10mV>|<C11mV>|<C11mV>|<C12mV>|<C12mV>|<C13mV>|<C13mV>|<C14mV>|<C14mV>|<C15mV>|<C15mV>|<C16mV>|<C16mV>|<C17mV>|<C17mV>|<C18mV>|<C18mV>| Cells 17,18| 
-|   0C  |   FE  |  0C   |  FD   |	 OC   |   FE  |   0C  |   FC  |  0C   |   FC  |   0C  |  FC   |   0C  |  FB   |  00   |   00  |  00   |   00  | not fitted | 
-| 3326mV|       | 3325mV|       |	3326mV|       | 3324mV|       | 3324mV|       | 3324mV|       | 3323mV|       | n/a   |       |  n/a  |       | on HV2600  |
+|(C10mV)|(C10mV)|(C11mV)|(C11mV)|(C12mV)|(C12mV)|(C13mV)|(C13mV)|(C14mV)|(C14mV)|(C15mV)|(C15mV)|(C16mV)|(C16mV)|(C17mV)|(C17mV)|(C18mV)|(C18mV)| Cells 17,18| 
+| 0x0C  | 0xFE  | 0x0C  |  0xFD |	 0xOC |  0xFE |  0x0  |  0xFC | 0x0C  |  0xFC |  0x0C | 0xFC  |  0x0C | 0xFB  | 0x00  |  0x00 | 0x00  | 0x00  | not fitted | 
+| 3326mV|       | 3325mV|	      | 3326mV|       | 3324mV|       | 3324mV|       | 3324mV|       | 3323mV|       | n/a   |       |  n/a  |       | on HV2600  |
 ||
 
 
