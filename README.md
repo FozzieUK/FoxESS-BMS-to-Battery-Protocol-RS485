@@ -39,7 +39,7 @@ Occasionally the BMS will send a broadcast message with pack_id = 0
     
     The packs do not respond to this message
 
-The BMS breaks the basic rule (terminated by 0d,0a) occasionally by sending a message that does not have the 0d,0a terminator (it may be sent in a pair as it aways proceeds the next BMS request message which does have a terminator), this may be an instruction to all the packs? or the pack it is sending the next request to?, for now I simply log the message and will analyse it in more detail later once the basic pack information has been decoded, this is a sample of 3 of the messages -
+The BMS breaks the basic rule (terminated by 0d,0a) occasionally by sending a message that does not have the 0d,0a terminator (it may be sent in a pair as it aways preceeds the next BMS request message which does have a terminator), this may be an instruction to all the packs? or the pack it is sending the next request to?, for now I simply log the message and will analyse it in more detail later once the basic pack information has been decoded, this is a sample of 3 of the messages -
     
     > 01,03,02,AB,02,81,15,15,92,F5
     
