@@ -50,7 +50,7 @@ The BMS breaks the basic rule (terminated by 0d,0a) occasionally by sending a me
 It is *always* proceeded by the BMS Send <pack_id> request
 .
 
-### BMS Send Commands - 
+### BMS Commands 
 
 The BMS send command is comprised of three command codes, 
 
@@ -61,14 +61,14 @@ The BMS send command is comprised of three command codes,
 | Command 1  | Command 2 | Command 3 |            Notes                            |
 | :---------: | :-------: | :-------: | :----------------------------------------: |
 |  	 22      |    00     |    05     |   Send pack stats                           |
-|    11      |    00     |    09     |   Send pack cell mV 1-9                     |
+|    08      |    00     |    09     |   Send pack cell mV 1-9                     |
+|    11      |    00     |    09     |   Send pack cell mV 10-18                   |
 |    1A      |    00     |    08     |   Send pack temps                           |
 |    00      |    00     |    08     |   Send pack status                          |
-|    08      |    00     |    09     |   Send pack cell mV 10-18                   |
 
-### Command by Command review
+## Command by Command review
   
-  Starting with BMS command (** <22,00,05> Pack Stats**) to pack_1
+  BMS command <22,00,05> Pack Stats to pack 1
   
   the send message to pack_1 looks like this -
   > 01,03,00,22,00,05,25,C3,0D,0A
@@ -91,9 +91,9 @@ The BMS send command is comprised of three command codes,
 |   00    |   00   |   01    |   00   |	 88%   |00110011|  Cycles |  =11    |   2.0   |   82    | Decoded info, SoC=88%, Flags=00110011, ver 2.0, battery_type=82, Cycles = 11 |
   
 
-**another example using pack_4-**
+**another example using pack_4**
 
-Starting with BMS command (** <22,00,05> Pack Stats**) to pack_4
+  BMS command <22,00,05> Pack Stats to pack_4
   
   the send message to pack_4 looks like this -
   > 04,03,00,22,00,05,25,96,0D,0A
@@ -115,6 +115,65 @@ Starting with BMS command (** <22,00,05> Pack Stats**) to pack_4
 |	 <0x00> | <0x00> | Pack_id | <0x00> |  SoC   | Flags? |Cyclesmsb|Cycleslsb| f/w_ver |batt_type|                                        |
 |   00    |   00   |   04    |   00   |	 46    |   19   |   00    |   90    |   20    |   82    | Received packet                        |
 |   00    |   00   |   04    |   00   |	 70%   |00011001|  Cycles |  =144   |   2.0   |   82    | Decoded info, SoC=70%, Flags=00110011, ver 2.0, battery_type=82, Cycles = 144 |
+||
+
+  
+  BMS command (<08,00,09> Cell mV 1-9) to pack_8
+  
+  the send message to pack_8 looks like this -
+  
+  > 01,03,00,08,00,09,04,0E,0D,0A
+  
+  and the pack_8 response is this -
+  
+  > 01,03,12,0C,FD,0C,FD,0C,FE,0C,FD,0C,FD,0C,FD,0C,FD,0C,FD,0C,FD,20,F1,0D,0A
+  
+  The Length is 12 (decimal 18), the data begins at byte 4 for 18 bytes, followed by checksum of 20,F1 and terminated by 0d,0a
+  
+  The data packet is <0C,FD,0C,FD,0C,FE,0C,FD,0C,FD,0C,FD,0C,FD,0C,FD,0C,FD>
+  
+  So far all 16 bit integers have been the first byte is most significant.
+  
+  the data packet contains the following information
+  
+| Byte1 | Byte2 | Byte3 | Byte4 | Byte5 | Byte6 | Byte7 | Byte8 | Byte9 | Byte10| Byte11| Byte12| Byte13| Byte14| Byte15| Byte16| Byte17| Byte18|  Notes     |
+|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----------|
+|<C1mV> |<C1mV> |<C2mV> |<C2mV> |<C3mV> |<C3mV> |<C4mV> |<C4mV> |<C5mV> |<C5mV> |<C6mV> |<C6mV> |<C7mV> |<C7mV> |<C8mV> |<C8mV> |<C9mV> |<C9mV> |            |
+|   0C  |   FD  |  0C   |  FD   |	 OC   |   FE  |   0C  |   FD  |  0C   |   FD  |   0C  |  FD   |   0C  |  FD   |  0C   |   FD  |  0C   |   FD  |            |
+| 3325mV|       | 3325mV|       |	3326mV|       | 3325mV|       | 3325mV|       | 3325mV|       | 3325mV|       | 3325mV|       | 3325mV|       |            |
+||
+  
+ 
+  
+**another example using pack_1**  
+  
+  
+  BMS command (<11,00,09> Cell mV 10-18) to pack_1
+  
+  the send message to pack_1 looks like this -
+  
+  > 01,03,00,11,00,09,D5,C9,0D,0A
+  
+  and the pack_1 response is this -
+  
+  > 01,03,12,0C,FE,0C,FD,0C,FE,0C,FC,0C,FC,0C,FC,0C,FB,00,00,00,00,17,8C,0D,0A
+  
+  The Length is 12 (decimal 18), the data begins at byte 4 for 18 bytes, followed by checksum of 17,8C and terminated by 0d,0a
+  
+  The data packet is <0C,FE,0C,FD,0C,FE,0C,FC,0C,FC,0C,FC,0C,FB,00,00,00,00>
+  
+  So far all 16 bit integers have been the first byte is most significant.
+  
+  the data packet contains the following information
+  
+| Byte1 | Byte2 | Byte3 | Byte4 | Byte5 | Byte6 | Byte7 | Byte8 | Byte9 | Byte10| Byte11| Byte12| Byte13| Byte14| Byte15| Byte16| Byte17| Byte18|  Notes     |
+|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----------|
+|<C10mV>|<C10mV>|<C11mV>|<C11mV>|<C12mV>|<C12mV>|<C13mV>|<C13mV>|<C14mV>|<C14mV>|<C15mV>|<C15mV>|<C16mV>|<C16mV>|<C17mV>|<C17mV>|<C18mV>|<C18mV>| Cells 17,18| 
+|   0C  |   FE  |  0C   |  FD   |	 OC   |   FE  |   0C  |   FC  |  0C   |   FC  |   0C  |  FC   |   0C  |  FB   |  00   |   00  |  00   |   00  | not fitted | 
+| 3326mV|       | 3325mV|       |	3326mV|       | 3324mV|       | 3324mV|       | 3324mV|       | 3323mV|       | n/a   |       |  n/a  |       | on HV2600  |
+||
+
+
   
   
 ### Checksum
