@@ -84,11 +84,11 @@ The BMS send command is comprised of three command codes,
   
   the data packet contains the following information
   
-| Byte1   | Byte2  | Byte3   | Byte4  | Byte5  | Byte6  | Byte7   | Byte8   | Byte9   | Byte10  |      Notes                             |
-|:-------:|:------:|:-------:|:------:|:------:|:------:|:-------:|:-------:|:-------:|:-------:|:---------------------------------------|
-|	 <0x00> | <0x00> | Pack_id | <0x00> |  SoC   | Flags? |Cyclesmsb|Cycleslsb| f/w_ver |batt_type|                                        |
-|   00    |   00   |   01    |   00   |	 58    |   33   |   00    |   0B    |   20    |   82    | Received packet                        |
-|   00    |   00   |   01    |   00   |	 88%   |00110011|  Cycles |  =11    |   2.0   |   82    | Decoded info, SoC=88%, Flags=00110011, ver 2.0, battery_type=82, Cycles = 11 |
+| Byte1   | Byte2  | Byte3   | Byte4  | Byte5  | Byte6  |  Byte7,8  | Byte9   | Byte10  |    Notes                     |
+|:-------:|:------:|:-------:|:------:|:------:|:------:|:---------:|:-------:|:-------:|:-----------------------------|
+|	 <0x00> | <0x00> | Pack_id | <0x00> |  SoC   | Flags? |  Cycles   | f/w_ver |batt_type|                              |
+|   0x00  |  0x00  |  0x01   |  0x00  |	 0x58  |  0x33  | 0x00,0x0B |  0x20   |  0x82   | Received packet              |
+|   00    |   00   |   01    |   00   |	 88%   |00110011|  Cycles=11|   2.0   |   82    | Decoded info, SoC=88%, Flags=00110011, ver 2.0, battery_type=82, Cycles = 11 |
   
 
 **another example using pack_4**
@@ -110,12 +110,11 @@ The BMS send command is comprised of three command codes,
   
   the data packet contains the following information
   
-| Byte1   | Byte2  | Byte3   | Byte4  | Byte5  | Byte6  | Byte7   | Byte8   | Byte9   | Byte10  |      Notes                             |
-|:-------:|:------:|:-------:|:------:|:------:|:------:|:-------:|:-------:|:-------:|:-------:|:---------------------------------------|
-|	 <0x00> | <0x00> | Pack_id | <0x00> |  SoC   | Flags? |Cyclesmsb|Cycleslsb| f/w_ver |batt_type|                                        |
-|   00    |   00   |   04    |   00   |	 46    |   19   |   00    |   90    |   20    |   82    | Received packet                        |
-|   00    |   00   |   04    |   00   |	 70%   |00011001|  Cycles |  =144   |   2.0   |   82    | Decoded info, SoC=70%, Flags=00110011, ver 2.0, battery_type=82, Cycles = 144 |
-||
+| Byte1   | Byte2  | Byte3   | Byte4  | Byte5  | Byte6  |  Byte7,8  | Byte9   | Byte10  |    Notes                     |
+|:-------:|:------:|:-------:|:------:|:------:|:------:|:---------:|:-------:|:-------:|:-----------------------------|
+|	 <0x00> | <0x00> | Pack_id | <0x00> |  SoC   | Flags? |  Cycles   | f/w_ver |batt_type|                              |
+|   0x00  |  0x00  |  0x04   |  0x00  |	 0x46  |  0x19  | 0x00,0x90 |   0x20  |  0x82   | Received packet              |
+|   00    |   00   |   04    |   00   |	 70%   |00011001| Cycles=144|   2.0   |   82    | Decoded SoC=70%, Flags=00110011, ver 2.0, battery_type=82, Cycles = 144 |
 
   
   BMS command (<08,00,09> Cell mV 1-9) to pack_8
@@ -136,11 +135,11 @@ The BMS send command is comprised of three command codes,
   
   the data packet contains the following information
   
-| Byte1 | Byte2 | Byte3 | Byte4 | Byte5 | Byte6 | Byte7 | Byte8 | Byte9 | Byte10| Byte11| Byte12| Byte13| Byte14| Byte15| Byte16| Byte17| Byte18|  Notes     |
-|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----------|
-|(C1mV) |(C1mV) |(C2mV) |(C2mV) |(C3mV) |(C3mV) |(C4mV) |(C4mV) |(C5mV) |(C5mV) |(C6mV) |(C6mV) |(C7mV) |(C7mV) |(C8mV) |(C8mV) |(C9mV) |(C9mV) |            |
-|  0x0C |  0xFD | 0x0C  | 0xFD  |	0xOC  | 0xFE  | 0x0C  | 0xFD  | 0x0C  | 0xFD  | 0x0C  | 0xFD  | 0x0C  | 0xFD  | 0x0C  | 0xFD  | 0x0C  | 0xFD  |            |
-| 3325mV|       | 3325mV|       |	3326mV|       | 3325mV|       | 3325mV|       | 3325mV|       | 3325mV|       | 3325mV|       | 3325mV|       |            |
+|  Byte1, 2  |  Byte3,4  |  Byte5,6  |  Byte7,8  |  Byte9,10 | Byte11,12 | Byte13,14 | Byte15,16 | Byte17,18 |  Notes     |
+|:----------:|:---------:|:---------:|:---------:|:---------:|:---------:|:---------:|:---------:|:---------:|:-----------|
+| (Cell_1mV) |(Cell_2mV) |(Cell_3mV) |(Cell_4mV) |(Cell_5mV) |(Cell_6mV) |(Cell_7mV) |(Cell_8mV) |(Cell_9mV) |            |
+|  0x0C,0xFD | 0x0C,0xFD | 0xOC,0xFE | 0x0C,0xFD | 0x0C,0xFD | 0x0C,0xFD | 0x0C,0xFD | 0x0C,0xFD | 0x0C,0xFD |            |
+|   3325mV   |  3325mV   | 	3326mV   |  3325mV   |  3325mV   |  3325mV   |  3325mV   |  3325mV   | 3325mV    |            |
 ||
   
  
@@ -166,11 +165,11 @@ The BMS send command is comprised of three command codes,
   
   the data packet contains the following information
   
-| Byte1 | Byte2 | Byte3 | Byte4 | Byte5 | Byte6 | Byte7 | Byte8 | Byte9 | Byte10| Byte11| Byte12| Byte13| Byte14| Byte15| Byte16| Byte17| Byte18|  Notes     |
-|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----------|
-|(C10mV)|(C10mV)|(C11mV)|(C11mV)|(C12mV)|(C12mV)|(C13mV)|(C13mV)|(C14mV)|(C14mV)|(C15mV)|(C15mV)|(C16mV)|(C16mV)|(C17mV)|(C17mV)|(C18mV)|(C18mV)| Cells 17,18| 
-| 0x0C  | 0xFE  | 0x0C  |  0xFD |	 0xOC |  0xFE |  0x0  |  0xFC | 0x0C  |  0xFC |  0x0C | 0xFC  |  0x0C | 0xFB  | 0x00  |  0x00 | 0x00  | 0x00  | not fitted | 
-| 3326mV|       | 3325mV|	      | 3326mV|       | 3324mV|       | 3324mV|       | 3324mV|       | 3323mV|       | n/a   |       |  n/a  |       | on HV2600  |
+|  Byte1, 2  |  Byte3,4  |  Byte5,6  |  Byte7,8  |  Byte9,10 | Byte11,12 | Byte13,14 | Byte15,16 | Byte17,18 |  Notes     |
+|:----------:|:---------:|:---------:|:---------:|:---------:|:---------:|:---------:|:---------:|:---------:|:-----------|
+|   (C10mV)  |  (C11mV)  |  (C12mV)  |  (C13mV)  |  (C14mV)  |  (C15mV)  |  (C16mV)  |  (C17mV)  |  (C18mV)  | Cells 17,18| 
+| 0x0C,0xFE  | 0x0C,0xFD | 0xOC,0xFE | 0x0C,0xFC | 0x0C,0xFC | 0x0C,0xFC | 0x0C,0xFB | 0x00,0x00 | 0x00,0x00 | not fitted | 
+| 3326mV     |  3325mV   |   3326mV  |  3324mV   |  3324mV   |  3324mV   |  3323mV   |   n/a     |    n/a    | on HV2600  |
 ||
 
 
