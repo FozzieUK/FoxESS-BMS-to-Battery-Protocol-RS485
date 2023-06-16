@@ -23,7 +23,7 @@ As a general rule the BMS sends a 10 byte message which contains the <pack_id>,<
     
   which is <Pack_id=1>,<Function=3>,<Length=0><CMD1=0>,<CMD2=0>,<CMD3=8>,<CSUM Bytes 1=44,2=0C>,<EOI=0D,0A>
     
-When <Length>= 0 this is a request for data.
+When (Length)= 0 this is a request for data.
 
 
 ### Received message - The <pack_id> requested will respond with its data as -
