@@ -236,6 +236,14 @@ Messages are sent approx every 100mS, gaps between messages are approx 30mS
   
   > 08,03,12,0C,FC,0C,FD,0C,FD,0C,FC,0C,FC,0C,FE,0C,FE,0C,FE,0C,FE,23,56,0D,0A
   
+
+Note - The weird BMS message appears to be initialised at startup when the packs give their SN's, the next pack that receives a normal poll message (starts with 0,0,8) will be the first pack that replies when it receives the first pack weird message below (1), the next well reply to the (2) and the next to (3) cycling round and round the packs.
+e.g. on an 8 pack system if 4 was the first pack to be polled with 0,0,8 after startup, it will reply to the weird message (1) with it's status message (as if it had received a 22,0,5), then after a few commands the BMS sends message (2) and pack 5 would respond, then after a few commands message (3) will go out and pack 6 will respond, then back to message (1) and pack 7 will respond, message (2) and pack 8 will respond, message (3) and pack 1 will respond ad infinitum.
+> (1) 1,3,0,0,0,95,11,11,F4,70
+> (2) 1,3,0c,df,0c,d3,13,13,3,4b
+> (3) 1,3,2,76,2,61,15,15,7f,10 (note the 76 is sometimes 75, and the 61 sometimes 60)
+
+This may be an instruction from the BMS to set charge/balance flags - it is unclear at this moment as the message seems static apart from 2 bytes of message 3, work continues....
   
 **Disclaimer**: Any information on this wiki is informal advice, and is not supported nor endorsed by FoxESS. 
 There is no warranty expressed or implied: you take sole responsibility for everything you do with this information and your equipment. There is no warranty to the accuracy of the content, nor any affiliation, or in any way a connection to FoxESS Co. Ltd
