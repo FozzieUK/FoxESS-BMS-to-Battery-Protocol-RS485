@@ -39,7 +39,7 @@ Occasionally the BMS will send a broadcast message with pack_id = 0
     
     The packs do not respond to this message
 
-The BMS breaks the basic rule (terminated by 0d,0a) occasionally by sending a message that does not have the 0d,0a terminator (it may be sent in a pair as it aways preceeds the next BMS request message which does have a terminator), this may be an instruction to all the packs? or the pack it is sending the next request to?, for now I simply log the message and will analyse it in more detail later once the basic pack information has been decoded, this is a sample of 3 of the messages -
+The BMS breaks the basic rule (terminated by 0d,0a) occasionally by sending a message that does not have the 0d,0a terminator, this may be an instruction to all the packs?, or a keep alive timer/ sync message. For now I simply log the message and will analyse it in more detail later once the basic pack information has been decoded, this is a sample of 3 of the messages -
     
     > 01,03,02,AB,02,81,15,15,92,F5
     
@@ -47,8 +47,8 @@ The BMS breaks the basic rule (terminated by 0d,0a) occasionally by sending a me
     
     > 01,03,0D,03,0C,FD,13,13,B3,40
     
-It is *always* proceeded by the BMS Send <pack_id> request
-.
+It is **never** replied to and is followed shortly by the BMS send pack statistics, or pack status command which is replied to normally.
+
 
 ### BMS Commands 
 
@@ -60,7 +60,7 @@ The BMS send command is comprised of three command codes,
     
 | Command 1  | Command 2 | Command 3 |            Notes                            |
 | :---------: | :-------: | :-------: | :----------------------------------------: |
-|  	 22      |    00     |    05     |   Send pack stats                           |
+|  	 22      |    00     |    05     |   Send pack statistics                      |
 |    08      |    00     |    09     |   Send pack cell mV 1-9                     |
 |    11      |    00     |    09     |   Send pack cell mV 10-18                   |
 |    1A      |    00     |    08     |   Send pack temps                           |
