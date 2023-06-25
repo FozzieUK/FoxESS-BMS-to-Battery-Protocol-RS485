@@ -1,7 +1,7 @@
 # FoxESS-BMS-to-Battery-Protocol-RS485
 FoxESS BMS to Battery RS485 Protocol between FoxESS V1 BMS and V1 HV2600 Battery
 
-RS485 @ 115,200 baud, N,8,1 - mostly big endian !
+RS485 @ 115,200 baud, N,8,1 - **Big Endian**
 
 This is an early work (in progress) in decoding the messages between the FoxESS BMS and HV Batteries
 
@@ -9,11 +9,11 @@ This is an early work (in progress) in decoding the messages between the FoxESS 
 
 The RS485 should be configured with 115,200 baud, N, 8, 1 
 
-So far I am only documenting the running state, it is clear that battery serial numbers are not transmitted in the normal real time messages, and as the BMS has this information it must be part of the start up negotiation (to be documented)
+So far I have only documenting the running state, I have captured the startup (but not yet documented), at startup the BMS checks the packs for operation response, and then requests battery serial numbers and pack status before it moves into normal state.
 
 ## Messages
 
-Unlike other BMS protocols where the messages have an [SOI]...[EOI] this protocol is different....
+Unlike other BMS protocols where the messages have an [SOI]...[EOI] this protocol differs..
   
 As a general rule the BMS sends a 10 byte message which contains the <pack_id>,<function>,<length>,<command bytes 1,2,3>, followed by a 2 byte checksum and <0d>,<0a>.
 
@@ -39,7 +39,8 @@ Occasionally the BMS will send a broadcast message with pack_id = 0
     
     The packs do not respond to this message
 
-The BMS breaks the basic rule (terminated by 0d,0a) occasionally by sending a message that does not have the 0d,0a terminator, this may be an instruction to all the packs?, or a keep alive timer/ sync message. For now I simply log the message and will analyse it in more detail later once the basic pack information has been decoded, this is a sample of 3 of the messages -
+The BMS breaks the basic rule (terminated by 0d,0a) occasionally by sending a message that does not have the 0d,0a terminator, this may be an instruction to all the packs?, or a keep alive timer/ sync message. 
+For now I simply log the message and will analyse it once the basic pack information has been decoded, this is a sample of 3 of the messages -
     
     > 01,03,02,AB,02,81,15,15,92,F5
     
@@ -47,8 +48,7 @@ The BMS breaks the basic rule (terminated by 0d,0a) occasionally by sending a me
     
     > 01,03,0D,03,0C,FD,13,13,B3,40
     
-It is **never** replied to and is followed shortly by the BMS send pack statistics, or pack status command which is replied to normally.
-
+It is **never** replied to, it does **not** appear to have a valid checksum
 
 ### BMS Commands 
 
@@ -224,21 +224,20 @@ each message sequence is sent approx every 100mS, gaps between messages are appr
   
 ### Checksum
 
-  The checksum is calculate using all bytes of the message using CRC16 (modbus) Big Endian
+  The checksum is calculate using all bytes of the message (except the checksum and terminator 0a 0d) using CRC16 (modbus) Big Endian
  
-  > 03,03,00,08,00,09,05,EC,0D,0A  e.g.  030300080009 is 05EC
+  > **03,03,00,08,00,09,05**,EC,0D,0A  e.g.030300080009 = 0x05EC
   
-  > 04,03,00,08,00,09,04,5B,0D,0A
+  > **04,03,00,08,00,09**,04,5B,0D,0A    = 0x045B
   
-  > 07,03,00,08,00,09,04,68,0D,0A
+  > **07,03,00,08,00,09**,04,68,0D,0A    = 0x0468
   
-  > 08,03,00,08,00,09,04,97,0D,0A
+  > **08,03,00,08,00,09**,04,97,0D,0A    = 0x0497
   
-  > 08,03,12,0C,FC,0C,FD,0C,FD,0C,FC,0C,FC,0C,FE,0C,FE,0C,FE,0C,FE,23,56,0D,0A
+  > **08,03,12,0C,FC,0C,FD,0C,FD,0C,FC,0C,FC,0C,FE,0C,FE,0C,FE,0C,FE**,23,56,0D,0A     = 0x2356
 
 
-Note - The weird BMS message appears to be initialised at startup when the packs give their SN's, the next pack that receives a normal poll message (starts with 0,0,8) will be the first pack that replies when it receives the first pack weird message below (1), the next well reply to the (2) and the next to (3) cycling round and round the packs.
-e.g. on an 8 pack system if 4 was the first pack to be polled with 0,0,8 after startup, it will reply to the weird message (1) with it's status message (as if it had received a 22,0,5), then after a few commands the BMS sends message (2) and pack 5 would respond, then after a few commands message (3) will go out and pack 6 will respond, then back to message (1) and pack 7 will respond, message (2) and pack 8 will respond, message (3) and pack 1 will respond ad infinitum.
+Note - The weird BMS message does not appear to have a checksum.
 > (1) 1,3,0,0,0,95,11,11,F4,70
 > (2) 1,3,0c,df,0c,d3,13,13,3,4b
 > (3) 1,3,2,76,2,61,15,15,7f,10 (note the 76 is sometimes 75, and the 61 sometimes 60)
