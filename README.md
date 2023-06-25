@@ -224,9 +224,9 @@ each message sequence is sent approx every 100mS, gaps between messages are appr
   
 ### Checksum
 
-  I have not yet looked inot decoding the check sum - that is one for later, for now if anyone is interested in looking at it i've included a few BMS send messages (same command different pack) and a pack response message for reference - it's normally byte addition, some kind of modulus and reverse (but this is Fox... have to be different!)
-  
-  > 03,03,00,08,00,09,05,EC,0D,0A
+  The checksum is calculate using all bytes of the message using CRC16 (modbus) Big Endian
+ 
+  > 03,03,00,08,00,09,05,EC,0D,0A  e.g.  030300080009 is 05EC
   
   > 04,03,00,08,00,09,04,5B,0D,0A
   
@@ -235,7 +235,7 @@ each message sequence is sent approx every 100mS, gaps between messages are appr
   > 08,03,00,08,00,09,04,97,0D,0A
   
   > 08,03,12,0C,FC,0C,FD,0C,FD,0C,FC,0C,FC,0C,FE,0C,FE,0C,FE,0C,FE,23,56,0D,0A
-  
+
 
 Note - The weird BMS message appears to be initialised at startup when the packs give their SN's, the next pack that receives a normal poll message (starts with 0,0,8) will be the first pack that replies when it receives the first pack weird message below (1), the next well reply to the (2) and the next to (3) cycling round and round the packs.
 e.g. on an 8 pack system if 4 was the first pack to be polled with 0,0,8 after startup, it will reply to the weird message (1) with it's status message (as if it had received a 22,0,5), then after a few commands the BMS sends message (2) and pack 5 would respond, then after a few commands message (3) will go out and pack 6 will respond, then back to message (1) and pack 7 will respond, message (2) and pack 8 will respond, message (3) and pack 1 will respond ad infinitum.
