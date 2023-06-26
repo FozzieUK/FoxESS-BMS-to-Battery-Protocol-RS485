@@ -39,6 +39,8 @@ Occasionally the BMS will send a broadcast message with pack_id = 0
     
     The packs do not respond to this message
 
+It appears this could be the BMS charge/discharge command either 8C, 8D (charge/discharge?), the 'FD' in binary 11111101 is 1 bit per pack, this appears to be addressing all but pack 2.
+
 The BMS breaks the basic rule (terminated by 0d,0a) occasionally by sending a message that does not have the 0d,0a terminator, this may be an instruction to all the packs?, or a keep alive timer/ sync message. 
 For now I simply log the message and will analyse it once the basic pack information has been decoded, this is a sample of 3 of the messages -
     
