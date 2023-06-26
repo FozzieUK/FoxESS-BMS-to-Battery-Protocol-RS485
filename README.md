@@ -243,6 +243,98 @@ Note - The weird BMS message does not appear to have a checksum.
 > (3) 1,3,2,76,2,61,15,15,7f,10 (note the 76 is sometimes 75, and the 61 sometimes 60)
 
 This may be an instruction from the BMS to set charge/balance flags - it is unclear at this moment as the message seems static apart from 2 bytes of message 3, work continues....
+
+### STARTUP PROCESS
+
+When the BMS is starting up, the following procedure is observed
+
+BMS sends the following commands (with no response)
+
+> -> 00,01,01,[CSUM],[0D0A]
+
+> -> 00,01,01,[CSUM],[0D0A]
+
+> -> 00,01,01,[CSUM],[0D0A]
+
+> -> 00,00,03,[CSUM],[0D0A]
+
+> -> 00,00,03,[CSUM],[0D0A]
+
+> -> 00,00,03,[CSUM],[0D0A]
+
+This may be part of the pack learning/allocating the pack_id's as battery addressing on the HV2600's is always fixed with batteries nearest the BMS running 1,2,3,4,5... as it gets further away (assume the master/slave ports are involved in this in some way)
+
+
+Then the BMS sends
+
+> -> FF, 10, 00,23, 00, 01, 01, 00, 8B, 59, 0D, 0A  ('FF' as pack is 'all' broadcast - the command is this pack functional? )
+
+[pack_id], [command 10],[len=0],[cid1],[23],[cid2 0],[cid3 1],[pack_id 1],[0x00],[CSUM],[0D0A]
+
+Response from pack 1 (pack_id from message)
+
+> <- 01,10,00,23,00, 04, 30, 0D, 0A   (pack is operational, no response is not)
+
+BMS repeats ( for (pack_id = 1; pack_id <= 8; ++pack_id) )
+
+> -> FF, 10, 00, 23, 00, 01,[pack_id], 00, [CSUM], [0D0A]
+
+Response from pack_id's
+
+> <- [pack_id],10,00,23,00, [CSUM], [0D0A]
+
+Then BMS sends 
+
+> -> FF, 03, 00, 00, 00, 08, [CSUM], [0D0A]
+
+> -> FF, 03, 00, 00, 00, 08, [CSUM], [0D0A]
+
+' there is no response from packs to this message - I assume it means next command coming is status '00, 00, 08'
+
+
+Then BMS Sends pack statistic requests
+
+> -> 01, 03, 00, 00, 00, 08, [CSUM], [0D0A]
+
+Response from pack 1
+
+> <- 01,03,[LEN],[DATA....*LEN], [CSUM], [0D0A]
+
+(this is the normal response to request for pack statistics)
+
+BMS repeats ( for (pack_id = 1; pack_id <= 8; ++pack_id) )
+
+Response from pack_id's
+
+[pack_id],03,[LEN],[DATA....*LEN], [CSUM], [0D0A]
+
+Then BMS Sends pack statistic and status requests in groups
+
+> -> 01, 03, 00, 00, 00, 08, [CSUM], [0D0A]
+
+> <- [pack_id],03,[LEN],[DATA....*LEN], [CSUM], [0D0A]
+
+> -> 01, 03, 00, 22, 00, 05, [CSUM], [0D0A]
+
+> <- [pack_id],03,[LEN],[DATA....*LEN], [CSUM], [0D0A]
+
+BMS repeats group 00,00,08 then 22,00,05 ( for (pack_id = 1; pack_id <= 8; ++pack_id) )
+
+each pack responds
+
+Then BMS moves on to information request
+
+> -> 01, 03, 00, E0, 00, 09, [CSUM], [0D0A] ' send serial number
+
+> <- 01, 03, [LEN=18], [DATA... * LEN], [CSUM], [0D0A]
+
+
+where data is ascii serial number i.e. if first 5 bytes are 36, 30, 32, 48, 32, 36, 32, the serial number is '602H262xxxx'
+
+BMS repeats ( for (pack_id = 1; pack_id <= 8; ++pack_id) )
+
+AT THIS POINT THE RUNNING STATE IS NORMAL i.e. normal cyclical polling of packs
+
   
 **Disclaimer**: Any information on this wiki is informal advice, and is not supported nor endorsed by FoxESS. 
 There is no warranty expressed or implied: you take sole responsibility for everything you do with this information and your equipment. There is no warranty to the accuracy of the content, nor any affiliation, or in any way a connection to FoxESS Co. Ltd
