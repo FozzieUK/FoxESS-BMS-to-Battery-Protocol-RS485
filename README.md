@@ -9,19 +9,19 @@ This is an early work (in progress) in decoding the messages between the FoxESS 
 
 The RS485 should be configured with 115,200 baud, N, 8, 1 
 
-So far I have only documenting the running state, I have captured the startup (but not yet documented), at startup the BMS checks the packs for operation response, and then requests battery serial numbers and pack status before it moves into normal state.
+This mostly documents the running state, the startup is documented towards the end - at startup the BMS checks the packs for operation response, and then requests battery serial numbers and pack status before it moves into normal state.
 
 ## Messages
 
-Unlike other BMS protocols where the messages have an [SOI]...[EOI] this protocol differs..
+Unlike other BMS<>Battery protocols where the messages have an [SOI]...[EOI] this protocol differs somewhat..
   
-As a general rule the BMS sends a 10 byte message which contains the <pack_id>,<function>,<length>,<command bytes 1,2,3>, followed by a 2 byte checksum and <0d>,<0a>.
+As a general rule the BMS sends a 10 byte message which contains the [pack_id],[function],[length],[command bytes 1,2,3], followed by a 2 byte checksum and <0d>,<0a>.
 
 ### BMS Sends - 
   
   <01>,<03>,<00>,<00>,<00>,<08>,<44>,<0C>,<0D>,<0A>
     
-  which is <Pack_id=1>,<Function=3>,<Length=0><CMD1=0>,<CMD2=0>,<CMD3=8>,<CSUM Bytes 1=44,2=0C>,<EOI=0D,0A>
+  which is [Pack_id=1],[Function=3],[Length=0][CMD1=0],[CMD2=0],[CMD3=8],[CSUM Bytes 1=44,2=0C],[EOI=0D,0A]
     
 When (Length)= 0 this is a request for data.
 
@@ -30,7 +30,7 @@ When (Length)= 0 this is a request for data.
     
   <01>,<03>,<10>,<00>,<00>,<67>,<E2>,<F7>,<B5>,<00>,<4C>,<0D>,<00>,<0C>,<FD>,<0B>,<0E>,<0A>,<D2>,<27>,<41>,<0D>,<0A>
     
-which is <Pack_id=1>,<Function=3>,<Length=x10><Data Bytes 1...Length>,<CSUM Bytes 1=27,2=41>,<EOI=0D,0A>
+which is [Pack_id=1],[Function=3],[Length=x10][Data Bytes 1...Length],[CSUM Bytes 1=27,2=41],[EOI=0D,0A]
   
 
 Occasionally the BMS will send a broadcast message with pack_id = 0
