@@ -41,7 +41,7 @@ Occasionally the BMS will send a broadcast message with pack_id = 0
 
 It appears this could be the BMS charge/discharge command either 8C, 8D (charge/discharge?), the 'FD' in binary 11111101 is 1 bit per pack, this appears to be addressing all but pack 2.
 
-The BMS breaks the basic rule (terminated by 0d,0a) occasionally by sending a message that does not have the 0d,0a terminator, this may be an instruction to all the packs?, or a keep alive timer/ sync message. 
+The BMS breaks the basic rule (terminated by 0d,0a) occasionally by sending a message that does not have the 0d,0a terminator, this may be an instruction to all the packs, or keep alive timer (or both) .
 For now I simply log the message and will analyse it once the basic pack information has been decoded, this is a sample of 3 of the messages -
     
     > 01,03,02,AB,02,81,15,15,92,F5
@@ -50,7 +50,7 @@ For now I simply log the message and will analyse it once the basic pack informa
     
     > 01,03,0D,03,0C,FD,13,13,B3,40
     
-It is **never** replied to, it does **not** appear to have a valid checksum
+It is **never** replied to, it does have a valid checksum with a small difference in calculation (see checksum section below)
 
 ### BMS Commands 
 
@@ -239,12 +239,12 @@ each message sequence is sent approx every 100mS, gaps between messages are appr
   > **08,03,12,0C,FC,0C,FD,0C,FD,0C,FC,0C,FC,0C,FE,0C,FE,0C,FE,0C,FE**,23,56,0D,0A     = 0x2356
 
 
-Note - The weird BMS message does not appear to have a checksum.
-> (1) 1,3,0,0,0,95,11,11,F4,70
-> (2) 1,3,0c,df,0c,d3,13,13,3,4b
-> (3) 1,3,2,76,2,61,15,15,7f,10 (note the 76 is sometimes 75, and the 61 sometimes 60)
+Note - The weird BMS message has a checksum but it calculates from the second byte of the message
+> (1) 1,3,0,0,0,95,11,11,F4,70 - checksum calculation is 03000000951111 = 0xF470
+> (2) 1,3,0c,df,0c,d3,13,13,3,4b - checksum calculation is 030cdf0cd31313 = 0x034b
+> (3) 1,3,2,76,2,61,15,15,7f,10 
 
-This may be an instruction from the BMS to set charge/balance flags - it is unclear at this moment as the message seems static apart from 2 bytes of message 3, work continues....
+This appears to be an instruction from the BMS to set charge/balance flags - it is unclear at this moment as the message seems static apart from 2 bytes of message 3, work continues....
 
 ### STARTUP PROCESS
 
