@@ -41,14 +41,20 @@ Occasionally the BMS will send a broadcast message with pack_id = 0
 
 It appears this could be the BMS charge/discharge command either 8C, 8D (charge/discharge?), the 'FD' in binary 11111101 is 1 bit per pack, this appears to be addressing all but pack 2.
 
-The BMS breaks the basic rule (terminated by 0d,0a) occasionally by sending a message that does not have the 0d,0a terminator, this may be an instruction to all the packs, or keep alive timer (or both) .
-For now I simply log the message and will analyse it once the basic pack information has been decoded, this is a sample of 3 of the messages -
+The BMS breaks the basic rule (terminated by 0d,0a) by sending a message that does not have the 0d,0a terminator, this appears to be an instruction to all the packs as well as a keep alive timer.
+This is a sample of 3 of the messages -
     
-    > 01,03,02,AB,02,81,15,15,92,F5
+    > 01,03,02,AB,02,81,15,15,92,F5 
     
-    > 01,03,00,5E,00,92,11,11,EC,7C
+    This is [1],[3],[02,AB,02,81],[15,15],[CSUM,CSUM] - command is currently unknown
     
-    > 01,03,0D,03,0C,FD,13,13,B3,40
+    > 01,03,00,5E,00,92,11,11,EC,7C - Pack status
+    
+    The data is [00,5E,00,92] where 00,5E is SINT16 Current Sense (-0.94A),  00,92 is UINT16 Highest Cycles Count (94 cycles)
+    
+    > 01,03,0D,28,0D,1F,13,13,36,8C - Pack cell volts High and Low
+    
+    The data is [0D,28,0D,1F] where 0D,28 is UINT16 Pack Highest mV (3355mV) 0D,1F is UINT16 Pack lowest mV (3346mV)
     
 It is **never** replied to, it does have a valid checksum with a small difference in calculation (see checksum section below)
 
