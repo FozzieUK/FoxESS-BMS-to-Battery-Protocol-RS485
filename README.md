@@ -191,7 +191,7 @@ each message sequence is sent approx every 100mS, gaps between messages are appr
   
 | Byte1   | Byte2  | Byte3,4  | Byte5  | Byte6  |  Byte7,8  | Byte9,10  | Byte11,12 | Byte13,14  | Byte15,16  |    Notes      |
 |:-------:|:------:|:--------:|:------:|:------:|:---------:|:---------:|:---------:|:----------:|:----------:|:--------------|
-|	 <0x00> | <0x00> | Volts    | <0x00> |  kWR   |    Amps   |   HimV    |   LomV    | HiCellTemp | LoCellTemp |               |
+|	 <0x00> | <0x00> | Volts    |   HW   |  kWR   |    Amps   |   HimV    |   LomV    | HiCellTemp | LoCellTemp |               |
 |   0x00  |  0x00  | 0x67,0xE7|  0xF7  |	0xDC  | 0x00,0xED | 0x0C,0xFE | 0x0C,0xFB |  0x0A,0x6E |  0x0A,0x32 |               |
 |   00    |   00   |  53.198V |   00   | 2.2kwH |  -2.37A   |     3326  |   3323    |   26.70C   |   26.10C   |               |
  
@@ -205,6 +205,8 @@ each message sequence is sent approx every 100mS, gaps between messages are appr
       Hi/LomV, 1st byte=msb, 2nd byte4=lsb, diviser = 1 e.g 0x0C,0xFE = 3326mV
   
       Hi/LoCellTemp 1st byte=msb, 2nd byte4=lsb, diviser = 0.01 e.g 0x0A,0x6E = 26.70C
+
+      HW    Byte5 looks to be either hardware version or encoded manufacture date.
   
   
   
