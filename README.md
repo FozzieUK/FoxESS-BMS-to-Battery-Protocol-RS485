@@ -75,6 +75,8 @@ The BMS send command is comprised of three command codes,
 |    11      |    00     |    09     |   Send pack cell mV 10-18                   |
 |    1A      |    00     |    08     |   Send pack temps                           |
 |    00      |    00     |    08     |   Send pack status                          |
+|    23      |    00     |    01     |   Request pack state (startup only)         |
+|    E0      |    00     |    09     |   Request pack serial number (startup only) |
 
 each message sequence is sent approx every 100mS, gaps between messages are approx 30mS - so each pack sequence is approx 0.5S apart
   
@@ -111,32 +113,6 @@ each message sequence is sent approx every 100mS, gaps between messages are appr
   
       Flags, Byte6 assumed to be charge, discharge, balance etc.. - more testing required.
 
-  
-**another example using pack_4**
-
-  ### BMS command <22,00,05> Pack Stats
-  
-  the send message to pack_4 looks like this -
-  > 04,03,00,22,00,05,25,96,0D,0A
-
-  
-  and the pack_4 response is this - 
-  > 04,03,0A,00,00,04,00,46,19,00,90,20,82,A3,A8,0D,0A
-  
-  The Length is 0A (decimal 10), the data begins at byte 4 for 10 bytes, followed by checksum of A3,A8 and terminated by 0d,0a
-  
-  The data packet is <00,00,04,00,46,19,00,90,20,82>
-  
-  So far all 16 bit integers have been the first byte is most significant.
-  
-  the data packet contains the following information
-  
-| Byte1   | Byte2  | Byte3   | Byte4  | Byte5  | Byte6  |  Byte7,8  | Byte9   | Byte10  |    Notes                     |
-|:-------:|:------:|:-------:|:------:|:------:|:------:|:---------:|:-------:|:-------:|:-----------------------------|
-|	 <0x00> | <0x00> | Pack_id | <0x00> |  SoC   | Flags? |  Cycles   | f/w_ver |batt_type|                              |
-|   0x00  |  0x00  |  0x04   |  0x00  |	 0x46  |  0x19  | 0x00,0x90 |   0x20  |  0x82   | Received packet              |
-|   00    |   00   |   04    |   00   |	 70%   |00011001| Cycles=144|   2.0   |   82    | Decoded SoC=70%, Flags=00110011, ver 2.0, battery_type=82, Cycles = 144 |
-||
     
 
   
