@@ -39,7 +39,9 @@ Occasionally the BMS will send a broadcast message with pack_id = 0
     
     The packs do not respond to this message
 
-It appears this could be the BMS charge/discharge command either 8C, 8D (charge/discharge?), the 'FD' in binary 11111101 is 1 bit per pack, this appears to be addressing all but pack 2.
+This is the BMS instrutcing the packs what the minimum cell voltage is across the pack.
+The command data for this example is 8C, FD     the first byte '8C' the '8' is number of packs, the 'C' is the msb and the 'FD' is the lsb
+i.e. as it is big endian the value is 3,313mV
 
 The BMS breaks the basic rule (terminated by 0d,0a) by sending a message that does not have the 0d,0a terminator, this appears to be an instruction to all the packs as well as a keep alive timer.
 This is a sample of 3 of the messages -
