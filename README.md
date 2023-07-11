@@ -102,7 +102,7 @@ each message sequence is sent approx every 100mS, gaps between messages are appr
 |:-------:|:------:|:-------:|:------:|:------:|:------:|:---------:|:-------:|:-------:|:-----------------------------|
 |	 <0x00> | <0x00> | Pack_id | <0x00> |  SoC   | Flags? |  Cycles   | f/w_ver |batt_type|                              |
 |   0x00  |  0x00  |  0x01   |  0x00  |	 0x58  |  0x33  | 0x00,0x0B |  0x20   |  0x82   | Received packet              |
-|   00    |   00   |   01    |   00   |	 88%   |00110011|  Cycles=11|   2.0   |   82    | Decoded info, SoC=88%, Flags=00110011, ver 2.0, battery_type=82, Cycles = 11 |
+|   00    |   00   |   01    |   00   |	 88%   |00110011|  Cycles=11|   2.0   |   82    | Decoded info, SoC=88%, Flags=00110011, ver 2.0, battery_type=(0x82=V1HV2600, 0x84=V2), Cycles = 11 |
 ||
   Notes:
       Cycles Byte7=msb, Byte8=lsb - diviser 1 e.g (0x00*256)+0x90= 144 cycles
