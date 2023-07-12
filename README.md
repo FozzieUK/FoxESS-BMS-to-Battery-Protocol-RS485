@@ -109,7 +109,7 @@ each message sequence is sent approx every 100mS, gaps between messages are appr
   
       f/w ver Byte9 top nibble is major, bottom nibble is minor version so 0x1F is 1.15 and 0x20 is 2.0
   
-      batt_type  Byte10=0x82 appears to signify HV2600 V1
+      batt_type  Byte10=0x82 is HV2600 V1, 0x83 is ECS4100 v1, 0x84 is HV2600 v2
   
       Flags, Byte6 assumed to be charge, discharge, balance etc.. - more testing required.
 
