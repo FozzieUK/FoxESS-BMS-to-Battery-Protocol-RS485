@@ -11,6 +11,19 @@ The RS485 should be configured with 115,200 baud, N, 8, 1
 
 This mostly documents the running state, the startup is documented towards the end - at startup the BMS checks the packs for operation response, and then requests battery serial numbers and pack status before it moves into normal state.
 
+**Notes:**
+
+The battery reports soc and kw remaining the BMS largely ignores these and favours its own calculation based on cell voltages
+
+The battery can report an soc of 7% yet have a positive kw remaining and cell volts indicates these are wrong, likely the battery has drift
+
+The pack voltage the battery reports is not that reliable, if you sum the mV of all that packs cells you often get a slightly different number (I trust the cell mV not the reported)
+
+The BMS allows the packs to balance the cells, and broadcasts the pack himV and lomV which forces each pack to close the gap.
+
+The BMS appears to be in command of the charge request, I ran the batteries to minsoc at which point the discharge was cut, and a force charge occurred - there were no messages within the pack to request this other than normal status messages.
+
+
 ## Messages
 
 Unlike other BMS<>Battery protocols where the messages have an [SOI]...[EOI] this protocol differs somewhat..
@@ -103,8 +116,9 @@ each message sequence is sent approx every 100mS, gaps between messages are appr
 |	 <0x00> | <0x00> | Pack_id | <0x00> |  SoC   | Flags? |  Cycles   | f/w_ver |batt_type|                              |
 |   0x00  |  0x00  |  0x01   |  0x00  |	 0x58  |  0x33  | 0x00,0x0B |  0x20   |  0x82   | Received packet              |
 |   00    |   00   |   01    |   00   |	 88%   |00110011|  Cycles=11|   2.0   |   82    | Decoded info, SoC=88%, Flags=00110011, ver 2.0, battery_type=(0x82=V1HV2600, 0x84=V2), Cycles = 11 |
-||
-  Notes:
+
+  **Notes:**
+
       Cycles Byte7=msb, Byte8=lsb - diviser 1 e.g (0x00*256)+0x90= 144 cycles
   
       f/w ver Byte9 top nibble is major, bottom nibble is minor version so 0x1F is 1.15 and 0x20 is 2.0
@@ -140,9 +154,11 @@ each message sequence is sent approx every 100mS, gaps between messages are appr
 | (Cell_1mV) |(Cell_2mV) |(Cell_3mV) |(Cell_4mV) |(Cell_5mV) |(Cell_6mV) |(Cell_7mV) |(Cell_8mV) |(Cell_9mV) |            |
 |  0x0C,0xFD | 0x0C,0xFD | 0xOC,0xFE | 0x0C,0xFD | 0x0C,0xFD | 0x0C,0xFD | 0x0C,0xFD | 0x0C,0xFD | 0x0C,0xFD |            |
 |   3325mV   |  3325mV   | 	3326mV   |  3325mV   |  3325mV   |  3325mV   |  3325mV   |  3325mV   | 3325mV    |            |
-||
+
+
   
-  Notes:  
+  **Notes:**
+  
       Cell mV, 1st byte=msb, 2nd byte4=lsb, diviser = 1 e.g 0x0C,0xFE = 3326mV
  
  
@@ -195,7 +211,8 @@ each message sequence is sent approx every 100mS, gaps between messages are appr
 |   0x00  |  0x00  | 0x67,0xE7|  0xF7  |	0xDC  | 0x00,0xED | 0x0C,0xFE | 0x0C,0xFB |  0x0A,0x6E |  0x0A,0x32 |               |
 |   00    |   00   |  53.198V |   00   | 2.2kwH |  -2.37A   |     3326  |   3323    |   26.70C   |   26.10C   |               |
  
-  Notes:
+  **Notes:**
+  
       Volts Byte3=msb, Byte4=lsb - then double value, diviser 0.001 e.g (0x67*256)+0xE7= (26,599 * 2)/1000 = 53.198V
   
       kWR   Byte6 diviser, convert to decimal, diviser = 0.01 e.g (0xDC) = 220/100 = 2.2kwh
