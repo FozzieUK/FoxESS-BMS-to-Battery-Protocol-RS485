@@ -13,15 +13,13 @@ This mostly documents the running state, the startup is documented towards the e
 
 **Notes:**
 
-The battery reports soc and kw remaining the BMS largely ignores these and favours its own calculation based on cell voltages
+From my testing the battery packs report their own soc and kw remaining however the BMS largely ignores these and favours its own calculation based on cell voltages - I would say this is wise as the packs are often wrong, for example the battery pack can report an soc of 7% yet have a positive kw remaining and it's cell volts indicates these are wrong, likely the battery has soc drift problems.
 
-The battery can report an soc of 7% yet have a positive kw remaining and cell volts indicates these are wrong, likely the battery has drift
+The pack voltage the battery reports is not that reliable, if you sum the mV of all the cells in the pack you often get a slightly different number (from my tests I trust the cell mV and not the reported pack voltage - the differences are small, but with LFP small differences are significant)
 
-The pack voltage the battery reports is not that reliable, if you sum the mV of all that packs cells you often get a slightly different number (I trust the cell mV not the reported)
+The BMS allows the packs to balance their own cells, it broadcasts the pack high mV and low mV to all packs so they know what the range is and will try and close the gap.
 
-The BMS allows the packs to balance the cells, and broadcasts the pack himV and lomV which forces each pack to close the gap.
-
-The BMS appears to be in command of the charge request, I ran the batteries to minsoc at which point the discharge was cut, and a force charge occurred - there were no messages within the pack to request this other than normal status messages.
+The BMS appears to be in command of the charge request, I have run the batteries to BMS minsoc (some packs were reporting well below minsoc, but their cell voltages indicated they were wrong) at which point the discharge was cut, and a force charge occurred - there were no messages within the pack to request this other than normal status messages, this request occurs on the BMS to inverter CANBUS.
 
 
 ## Messages
