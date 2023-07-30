@@ -17,9 +17,12 @@ From my testing the battery packs report their own soc and kw remaining however 
 
 The 'total' pack voltage the battery reports is not that reliable, if you sum the mV of all the cells in the pack you often get a slightly different number (from my tests I trust the cell mV and not the reported pack voltage - the differences are small, but with LFP small differences are significant)
 
-The BMS allows the packs to balance their own cells, it broadcasts the pack high mV and low mV, and high and low temps to all packs so they know what the 'pack' range is for them to try and close the gap with their balance circuits.
+On the HV2600 pack there are 16 LifePo4 cells with a typical in operation voltage range of 3.1 to 3.55V, each cell reports its own voltage (16 cell voltages), however there are only 8 temperature probes - I believe (from deductionrather than a physical teardown) that the cells are grouped into 2's sharing a single temperature probe and an active balancer circuit. [Note I would be grateful if anyone ever gets the chance to postmortem a pack they check this, or send it to me so I can review the design]. 
 
-The BMS appears to be in command of the charge request, I have run the batteries to BMS minsoc (some packs were reporting well below minsoc, but their cell voltages indicated they were wrong) at which point the discharge was cut, and a force charge occurred - there were no messages within the pack to request this other than normal status messages, this request occurs on the BMS to inverter CANBUS and is a request from the BMS to the inverter to enable the charger.
+The individual packs balance their own cells, the BMS broadcasts the pack high mV and low mV to all packs so they know what the 'pack' range is for them to try and close the gap with their balance circuits. The active balance circuitry appears (from observation of current flow, not circuit design) to be capable of moving charge between cells at between 200mA and 600mA (depending on charge or discharge balance). This suggests a badly balanced pack could take some considerable time before pack balance can be achieved - and so the best way to achieve alignment is to limit the charge current - this will take the pack longer to charge, but it allows the individual pack more time to calibrate.
+
+The BMS appears to be in command of the charge request, I have run the batteries to BMS minsoc (some packs were reporting well below minsoc, but their cell voltages indicated they were wrong) at which point the discharge was cut, and a force charge occurred - there were no messages within the pack to request this other than normal status messages, this charge request occurs from the BMS to inverter on CANBUS and results in the inverter enabling it's charger at a low charge rate (usually ~1kw).
+
 
 
 ## Messages
