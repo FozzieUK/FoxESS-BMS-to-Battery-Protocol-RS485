@@ -13,13 +13,13 @@ This mostly documents the running state, the startup is documented towards the e
 
 **Notes:**
 
-From my testing the battery packs report their own soc and kw remaining however the BMS largely ignores these and favours its own calculation based on cell voltages - I would say this is wise as the packs are often wrong, for example the battery pack can report an soc of 7% yet have a positive kw remaining and it's cell volts indicates these are wrong, likely the battery has soc drift problems.
+From my testing the battery packs report their own soc and kw remaining however the BMS largely ignores these and favours its own calculation based on cell voltages, watt counters and some temperature compensation - I would say this is wise as the packs often report incorrect stats, for example the battery pack can report an soc of 7% yet have a positive kw remaining and it's cell volts confirms these are wrong, likely the battery slave has some soc drift problems which the BMS corrects for.
 
-The pack voltage the battery reports is not that reliable, if you sum the mV of all the cells in the pack you often get a slightly different number (from my tests I trust the cell mV and not the reported pack voltage - the differences are small, but with LFP small differences are significant)
+The 'total' pack voltage the battery reports is not that reliable, if you sum the mV of all the cells in the pack you often get a slightly different number (from my tests I trust the cell mV and not the reported pack voltage - the differences are small, but with LFP small differences are significant)
 
-The BMS allows the packs to balance their own cells, it broadcasts the pack high mV and low mV to all packs so they know what the range is and will try and close the gap.
+The BMS allows the packs to balance their own cells, it broadcasts the pack high mV and low mV, and high and low temps to all packs so they know what the 'pack' range is for them to try and close the gap with their balance circuits.
 
-The BMS appears to be in command of the charge request, I have run the batteries to BMS minsoc (some packs were reporting well below minsoc, but their cell voltages indicated they were wrong) at which point the discharge was cut, and a force charge occurred - there were no messages within the pack to request this other than normal status messages, this request occurs on the BMS to inverter CANBUS.
+The BMS appears to be in command of the charge request, I have run the batteries to BMS minsoc (some packs were reporting well below minsoc, but their cell voltages indicated they were wrong) at which point the discharge was cut, and a force charge occurred - there were no messages within the pack to request this other than normal status messages, this request occurs on the BMS to inverter CANBUS and is a request from the BMS to the inverter to enable the charger.
 
 
 ## Messages
